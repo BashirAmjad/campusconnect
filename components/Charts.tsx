@@ -1,0 +1,102 @@
+"use client";
+
+import {
+  ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, Legend, AreaChart, Area,
+} from "recharts";
+import type { ReactNode } from "react";
+
+export const STATUS_COLORS: Record<string, string> = {
+  Pending: "#f59e0b",
+  "In Progress": "#2563eb",
+  Resolved: "#10b981",
+  Rejected: "#ef4444",
+};
+const CAT_COLORS = ["#2563eb", "#14213d", "#0ea5e9", "#6366f1"];
+const tooltipStyle = { borderRadius: 12, border: "1px solid #e2e8f0", boxShadow: "0 8px 24px -12px rgba(15,23,42,.25)", fontSize: 12 };
+
+export function ChartCard({ title, subtitle, children, className = "" }: { title: string; subtitle?: string; children: ReactNode; className?: string }) {
+  return (
+    <div className={`card animate-fade-up p-5 ${className}`}>
+      <p className="text-sm font-semibold text-slate-900">{title}</p>
+      {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
+      <div className="mt-4 h-64">{children}</div>
+    </div>
+  );
+}
+
+function NoData() {
+  return <div className="grid h-full place-items-center text-sm text-slate-400">No complaints recorded yet</div>;
+}
+
+export function StatusPie({ data }: { data: { name: string; value: number }[] }) {
+  const filtered = data.filter((d) => d.value > 0);
+  if (!filtered.length) return <NoData />;
+  return (
+    <ResponsiveContainer>
+      <PieChart>
+        <Pie data={filtered} dataKey="value" nameKey="name" innerRadius="55%" outerRadius="85%" paddingAngle={3} strokeWidth={0}>
+          {filtered.map((d) => <Cell key={d.name} fill={STATUS_COLORS[d.name] ?? "#94a3b8"} />)}
+        </Pie>
+        <Tooltip contentStyle={tooltipStyle} />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function CategoryBars({ data }: { data: { name: string; value: number }[] }) {
+  if (!data.some((d) => d.value > 0)) return <NoData />;
+  return (
+    <ResponsiveContainer>
+      <BarChart data={data} layout="vertical" margin={{ left: 10, right: 16 }}>
+        <CartesianGrid horizontal={false} stroke="#f1f5f9" />
+        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
+        <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 11, fill: "#334155" }} axisLine={false} tickLine={false} />
+        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#f8fafc" }} />
+        <Bar dataKey="value" name="Complaints" radius={[0, 6, 6, 0]} barSize={22}>
+          {data.map((d, i) => <Cell key={d.name} fill={CAT_COLORS[i % CAT_COLORS.length]} />)}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function DepartmentBars({ data }: { data: { name: string; pending: number; in_progress: number; resolved: number; rejected: number }[] }) {
+  if (!data.some((d) => d.pending + d.in_progress + d.resolved + d.rejected > 0)) return <NoData />;
+  const short = data.map((d) => ({ ...d, short: d.name.replace(" Administration", "").replace("Teaching / ", "") }));
+  return (
+    <ResponsiveContainer>
+      <BarChart data={short} margin={{ right: 8 }}>
+        <CartesianGrid vertical={false} stroke="#f1f5f9" />
+        <XAxis dataKey="short" tick={{ fontSize: 11, fill: "#334155" }} axisLine={false} tickLine={false} interval={0} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={28} />
+        <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "#f8fafc" }} />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+        <Bar dataKey="pending" name="Pending" stackId="a" fill={STATUS_COLORS.Pending} />
+        <Bar dataKey="in_progress" name="In Progress" stackId="a" fill={STATUS_COLORS["In Progress"]} />
+        <Bar dataKey="resolved" name="Resolved" stackId="a" fill={STATUS_COLORS.Resolved} />
+        <Bar dataKey="rejected" name="Rejected" stackId="a" fill={STATUS_COLORS.Rejected} radius={[6, 6, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+export function TrendArea({ data }: { data: { date: string; submitted: number; resolved: number }[] }) {
+  return (
+    <ResponsiveContainer>
+      <AreaChart data={data} margin={{ right: 8 }}>
+        <defs>
+          <linearGradient id="gSub" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#2563eb" stopOpacity={0.3} /><stop offset="100%" stopColor="#2563eb" stopOpacity={0} /></linearGradient>
+          <linearGradient id="gRes" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#10b981" stopOpacity={0.3} /><stop offset="100%" stopColor="#10b981" stopOpacity={0} /></linearGradient>
+        </defs>
+        <CartesianGrid vertical={false} stroke="#f1f5f9" />
+        <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} interval={4} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={28} />
+        <Tooltip contentStyle={tooltipStyle} />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 12 }} />
+        <Area type="monotone" dataKey="submitted" name="Submitted" stroke="#2563eb" strokeWidth={2} fill="url(#gSub)" />
+        <Area type="monotone" dataKey="resolved" name="Since resolved" stroke="#10b981" strokeWidth={2} fill="url(#gRes)" />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
