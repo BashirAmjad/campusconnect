@@ -60,8 +60,7 @@ export default function Shell({ user, children }: { user: SessionUser; children:
 
   async function logout() {
     await api("/api/auth/logout", { method: "POST" }).catch(() => {});
-    router.push("/login");
-    router.refresh();
+    window.location.assign("/login");
   }
   async function markAll() {
     await api("/api/notifications", { method: "PATCH", json: { all: true } });

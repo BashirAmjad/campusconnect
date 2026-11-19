@@ -1,5 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { cache } from "react";
 import { one } from "./db";
 
 export type Role = "student" | "dept_admin" | "super_admin";
@@ -38,26 +40,38 @@ export async function createSession(userId: number) {
   });
 }
 
+/** For server pages: returns the user or redirects to the login page. */
+export async function pageUser(): Promise<SessionUser> {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  return user;
+}
+
 export async function destroySession() {
   const jar = await cookies();
   jar.delete(COOKIE);
 }
 
-/** Resolves the signed-in user from the verified token. Role and department always come from the database. */
-export async function getUser(): Promise<SessionUser | null> {
+/**
+ * Resolves the signed-in user from the verified token. Role and department always come from the database.
+ * Cached per request so the layout and page share one lookup.
+ */
+export const getUser = cache(async (): Promise<SessionUser | null> => {
   const jar = await cookies();
   const token = jar.get(COOKIE)?.value;
   if (!token) return null;
+  let id: number;
   try {
     const { payload } = await jwtVerify(token, secret());
-    const id = Number(payload.sub);
+    id = Number(payload.sub);
     if (!Number.isInteger(id)) return null;
-    return await one<SessionUser>(
-      `SELECT u.id, u.name, u.email, u.role, u.department_id, d.name AS department_name, u.registration_no
-       FROM users u LEFT JOIN departments d ON d.id = u.department_id WHERE u.id = $1`,
-      [id]
-    );
   } catch {
-    return null;
+    return null; // invalid or expired token
   }
-}
+  // Database errors propagate (500) instead of silently looking like a signed-out user.
+  return one<SessionUser>(
+    `SELECT u.id, u.name, u.email, u.role, u.department_id, d.name AS department_name, u.registration_no
+     FROM users u LEFT JOIN departments d ON d.id = u.department_id WHERE u.id = $1`,
+    [id]
+  );
+});

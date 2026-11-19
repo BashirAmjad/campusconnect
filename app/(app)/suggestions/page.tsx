@@ -1,7 +1,7 @@
-import { getUser } from "@/lib/auth";
+import { pageUser } from "@/lib/auth";
 import Suggestions from "@/components/Suggestions";
 
 export default async function SuggestionsPage() {
-  const user = (await getUser())!;
+  const user = await pageUser();
   return <Suggestions role={user.role} />;
 }

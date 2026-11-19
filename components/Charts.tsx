@@ -63,7 +63,13 @@ export function CategoryBars({ data }: { data: { name: string; value: number }[]
 
 export function DepartmentBars({ data }: { data: { name: string; pending: number; in_progress: number; resolved: number; rejected: number }[] }) {
   if (!data.some((d) => d.pending + d.in_progress + d.resolved + d.rejected > 0)) return <NoData />;
-  const short = data.map((d) => ({ ...d, short: d.name.replace(" Administration", "").replace("Teaching / ", "") }));
+  const SHORT: Record<string, string> = {
+    "Cafeteria Administration": "Cafeteria",
+    "Library Administration": "Library",
+    "Laboratory / IT Administration": "Lab / IT",
+    "Teaching / Academic Coordination": "Academic",
+  };
+  const short = data.map((d) => ({ ...d, short: SHORT[d.name] ?? d.name }));
   return (
     <ResponsiveContainer>
       <BarChart data={short} margin={{ right: 8 }}>

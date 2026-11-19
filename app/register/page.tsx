@@ -22,8 +22,7 @@ export default function RegisterPage() {
     try {
       const { confirm: _c, ...payload } = form;
       await api("/api/auth/register", { method: "POST", json: payload });
-      router.push("/dashboard");
-      router.refresh();
+      window.location.assign("/dashboard");
     } catch (err) {
       setError((err as Error).message);
       setBusy(false);
