@@ -61,7 +61,7 @@ const PRIORITY_STYLE: Record<string, string> = {
   High: "bg-orange-100 text-orange-700",
   Urgent: "bg-red-600 text-white",
 };
-const PRIORITY_DOT: Record<string, string> = { Low: "bg-slate-400", Medium: "bg-sky-500", High: "bg-orange-500", Urgent: "bg-surface animate-pulse" };
+const PRIORITY_DOT: Record<string, string> = { Low: "bg-slate-400", Medium: "bg-sky-500", High: "bg-orange-500", Urgent: "bg-white animate-pulse" };
 export function PriorityBadge({ priority }: { priority: string }) {
   return (
     <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-semibold ${PRIORITY_STYLE[priority] ?? ""}`}>

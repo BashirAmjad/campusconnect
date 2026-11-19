@@ -92,7 +92,7 @@ export default function Shell({ user, children }: { user: SessionUser; children:
           const active = isActive(href);
           return (
             <Link key={href} href={href}
-              className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${active ? "bg-white/10 text-white" : "hover:bg-surface/5 hover:text-white"}`}>
+              className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${active ? "bg-white/10 text-white" : "hover:bg-white/5 hover:text-white"}`}>
               <Icon className={`h-[18px] w-[18px] ${active ? "text-blue-300" : "text-white/55 group-hover:text-white/85"}`} />
               <span className="flex-1">{label}</span>
               {href === "/notifications" && unread > 0 && <span className="rounded-full bg-royal px-1.5 text-[11px] font-bold text-white">{unread}</span>}
@@ -101,7 +101,7 @@ export default function Shell({ user, children }: { user: SessionUser; children:
         })}
       </nav>
       <div className="mx-4 mb-1 sm:hidden"><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/55">Appearance</p><ThemeToggle /></div>
-      <button onClick={logout} className="m-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/55 hover:bg-surface/5 hover:text-white">
+      <button onClick={logout} className="m-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/55 hover:bg-white/5 hover:text-white">
         <LogOut className="h-[18px] w-[18px]" /> Sign out
       </button>
     </aside>
