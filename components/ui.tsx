@@ -8,7 +8,7 @@ export async function api<T = any>(url: string, init?: RequestInit & { json?: un
   const { json: body, ...rest } = init ?? {};
   const res = await fetch(url, {
     ...rest,
-    headers: body !== undefined ? { "Content-Type": "application/json", ...(rest.headers ?? {}) } : rest.headers,
+    headers: body !== undefined ? { "Content-Type": "application/json" } : rest.headers,
     body: body !== undefined ? JSON.stringify(body) : rest.body,
   });
   const data = await res.json().catch(() => ({}));
