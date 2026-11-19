@@ -5,13 +5,26 @@ const STOP = new Set(
   "the a an and or of in on at to for is are was were be been it this that with from by as not no very too our my we i they there their have has had every all any some more most can cannot do does did into about after before during while out up down only also just than then so but if keeps keep again".split(" ")
 );
 
+// Map common synonyms to one canonical keyword so differently-worded reports still match.
+const SYNONYMS: Record<string, string> = {
+  wifi: "internet", "wi-fi": "internet", network: "internet", connectivity: "internet", connection: "internet",
+  disconnect: "drop", disconnecting: "drop", dropping: "drop", drops: "drop",
+  dirty: "hygiene", unhygienic: "hygiene", unclean: "hygiene", flies: "hygiene", hygienic: "hygiene",
+  pc: "computer", pcs: "computer", computers: "computer", system: "computer", systems: "computer",
+  late: "late", delay: "late", delayed: "late",
+  seat: "seating", seats: "seating", tables: "seating", space: "seating",
+  expensive: "price", prices: "price", costly: "price",
+  notes: "material", slides: "material", materials: "material",
+};
+
 function tokens(text: string): Set<string> {
   return new Set(
     text
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, " ")
       .split(/\s+/)
-      .map((w) => w.replace(/(ing|ed|es|s)$/, ""))
+      .map((w) => SYNONYMS[w] ?? w.replace(/(ing|ed|es|s)$/, ""))
+      .map((w) => SYNONYMS[w] ?? w)
       .filter((w) => w.length > 2 && !STOP.has(w))
   );
 }
