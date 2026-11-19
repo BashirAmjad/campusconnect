@@ -61,7 +61,7 @@ const PRIORITY_STYLE: Record<string, string> = {
   High: "bg-orange-100 text-orange-700",
   Urgent: "bg-red-600 text-white",
 };
-const PRIORITY_DOT: Record<string, string> = { Low: "bg-slate-400", Medium: "bg-sky-500", High: "bg-orange-500", Urgent: "bg-white animate-pulse" };
+const PRIORITY_DOT: Record<string, string> = { Low: "bg-slate-400", Medium: "bg-sky-500", High: "bg-orange-500", Urgent: "bg-surface animate-pulse" };
 export function PriorityBadge({ priority }: { priority: string }) {
   return (
     <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-0.5 text-xs font-semibold ${PRIORITY_STYLE[priority] ?? ""}`}>
@@ -101,7 +101,7 @@ export function EmptyState({ icon: Icon, title, text, action }: { icon: LucideIc
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
       <div className="relative mb-4">
         <div className="absolute inset-0 rounded-full bg-blue-100 blur-xl" />
-        <div className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-50 to-white ring-1 ring-blue-100">
+        <div className="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-blue-50 to-surface ring-1 ring-blue-100">
           <Icon className="h-7 w-7 text-royal" />
         </div>
       </div>

@@ -1,39 +1,106 @@
 @import "tailwindcss";
 
+/* Dark mode is driven by a class on <html> (set before paint by the theme script). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------
+   Design tokens. Components use these (and the slate/hue scales,
+   which are remapped for dark mode below) instead of raw colors.
+   --------------------------------------------------------------- */
 @theme {
   --color-navy: #14213d;
   --color-navy-700: #1d2d52;
   --color-royal: #2563eb;
   --color-royal-50: #eff6ff;
+
+  --color-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-elevated: #ffffff;
+  --color-fg: #0f172a;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-sidebar: #14213d;
+
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --shadow-card: 0 1px 2px rgba(15,23,42,0.04), 0 4px 16px -8px rgba(15,23,42,0.08);
 }
 
-html, body { background: #f8fafc; color: #0f172a; }
+.dark {
+  color-scheme: dark;
+  --color-bg: #0b1220;
+  --color-surface: #151f32;
+  --color-elevated: #1e293b;
+  --color-fg: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-line: #334155;
+  --color-sidebar: #0a1020;
+  --color-royal-50: rgb(37 99 235 / 0.16);
+  --shadow-card: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.6);
+
+  /* Neutral scale flipped so existing text/bg utilities stay readable. */
+  --color-slate-50: #172036;
+  --color-slate-100: #1e293b;
+  --color-slate-200: #334155;
+  --color-slate-300: #475569;
+  --color-slate-400: #7c8ba1;
+  --color-slate-500: #94a3b8;
+  --color-slate-600: #b4c0d0;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f8fafc;
+
+  /* Semantic tints: pale backgrounds become translucent, dark text becomes light. */
+  --color-amber-50: rgb(245 158 11 / 0.12);  --color-amber-100: rgb(245 158 11 / 0.18);  --color-amber-200: rgb(245 158 11 / 0.35);
+  --color-amber-600: #fbbf24; --color-amber-700: #fcd34d; --color-amber-800: #fde68a; --color-amber-900: #fef3c7;
+  --color-blue-50: rgb(59 130 246 / 0.12);   --color-blue-100: rgb(59 130 246 / 0.2);    --color-blue-200: rgb(59 130 246 / 0.35);
+  --color-blue-300: #93c5fd; --color-blue-700: #93c5fd;
+  --color-emerald-50: rgb(16 185 129 / 0.12); --color-emerald-100: rgb(16 185 129 / 0.18); --color-emerald-200: rgb(16 185 129 / 0.35);
+  --color-emerald-600: #34d399; --color-emerald-700: #6ee7b7; --color-emerald-800: #a7f3d0; --color-emerald-900: #d1fae5;
+  --color-red-50: rgb(239 68 68 / 0.12);     --color-red-100: rgb(239 68 68 / 0.18);     --color-red-200: rgb(239 68 68 / 0.35);
+  --color-red-700: #fca5a5; --color-red-800: #fecaca;
+  --color-orange-50: rgb(249 115 22 / 0.12); --color-orange-100: rgb(249 115 22 / 0.18); --color-orange-700: #fdba74;
+  --color-sky-100: rgb(14 165 233 / 0.18);   --color-sky-700: #7dd3fc;
+  --color-indigo-100: rgb(99 102 241 / 0.2); --color-indigo-600: #a5b4fc; --color-indigo-700: #a5b4fc;
+  --color-violet-50: rgb(139 92 246 / 0.12); --color-violet-100: rgb(139 92 246 / 0.2);  --color-violet-700: #c4b5fd;
+}
+
+html, body { background: var(--color-bg); color: var(--color-fg); }
 body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+html.theme-transition, html.theme-transition * { transition: background-color .2s ease, border-color .2s ease, color .2s ease !important; }
+
+:focus-visible { outline: 2px solid var(--color-royal); outline-offset: 2px; border-radius: 6px; }
 
 @utility card {
   border-radius: 1rem;
-  border: 1px solid rgb(226 232 240 / 0.8);
-  background: #fff;
-  box-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 4px 16px -8px rgba(15,23,42,0.08);
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
 }
 @utility btn {
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   border-radius: .75rem; padding: .625rem 1rem; font-size: .875rem; line-height: 1.25rem; font-weight: 600;
   transition: all .15s ease; cursor: pointer;
+  &:active:not(:disabled) { transform: scale(.98); }
   &:disabled { opacity: .5; cursor: not-allowed; }
 }
 @utility btn-primary { @apply btn bg-royal text-white shadow-sm shadow-blue-600/20 hover:bg-blue-700; }
-@utility btn-dark { @apply btn bg-navy text-white hover:bg-navy-700; }
-@utility btn-ghost { @apply btn border border-slate-200 bg-white text-slate-700 hover:bg-slate-50; }
-@utility btn-danger { @apply btn bg-red-600 text-white hover:bg-red-700; }
+@utility btn-dark { @apply btn bg-navy text-white hover:bg-navy-700 dark:bg-royal dark:hover:bg-blue-600; }
+@utility btn-ghost { @apply btn border border-line bg-surface text-slate-700 hover:bg-slate-50; }
+@utility btn-danger { @apply btn bg-red-600 text-white hover:bg-red-500; }
 @utility input {
-  @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-royal focus:ring-4 focus:ring-blue-100;
+  @apply w-full rounded-xl border border-line bg-surface px-3.5 py-2.5 text-sm text-fg outline-none transition placeholder:text-slate-400 focus:border-royal focus:ring-4 focus:ring-blue-100;
 }
 @utility label { @apply mb-1.5 block text-sm font-medium text-slate-700; }
 
+select.input option { background: var(--color-surface); color: var(--color-fg); }
+
 @keyframes fade-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .animate-fade-up { animation: fade-up .25s ease-out both; }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } to { opacity: 1; transform: none; } }
+.animate-pop { animation: pop .15s ease-out both; transform-origin: top right; }
 @keyframes shimmer { 100% { transform: translateX(100%); } }
-.skeleton { position: relative; overflow: hidden; border-radius: .5rem; background: rgb(226 232 240 / .7); }
-.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); animation: shimmer 1.2s infinite; }
+.skeleton { position: relative; overflow: hidden; border-radius: .5rem; background: var(--color-slate-100); }
+.skeleton::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgb(255 255 255 / .35), transparent); animation: shimmer 1.2s infinite; }
+.dark .skeleton::after { background: linear-gradient(90deg, transparent, rgb(255 255 255 / .06), transparent); }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

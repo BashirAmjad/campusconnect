@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { SessionUser } from "@/lib/auth";
 import { api, timeAgo } from "./ui";
+import { ThemeToggle } from "./Theme";
 
 type Notification = { id: number; complaint_id: number | null; title: string; message: string; is_read: boolean; created_at: string };
 
@@ -71,18 +72,18 @@ export default function Shell({ user, children }: { user: SessionUser; children:
   const initials = user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
 
   const Sidebar = (
-    <aside className="flex h-full w-64 flex-col bg-navy text-slate-300">
+    <aside className="flex h-full w-64 flex-col bg-sidebar text-white/75">
       <div className="flex items-center gap-2.5 px-5 py-5">
         <div className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-royal to-blue-400 text-white shadow-lg shadow-blue-900/40">
           <GraduationCap className="h-5 w-5" />
         </div>
         <div>
           <p className="text-[15px] font-bold leading-tight text-white">CampusConnect</p>
-          <p className="text-[11px] text-slate-400">Complaint & Feedback Hub</p>
+          <p className="text-[11px] text-white/55">Complaint & Feedback Hub</p>
         </div>
       </div>
       <div className="mx-4 mb-3 rounded-xl bg-white/5 px-3 py-2 text-xs">
-        <p className="text-slate-400">Signed in as</p>
+        <p className="text-white/55">Signed in as</p>
         <p className="font-semibold text-white">{ROLE_LABEL[user.role]}</p>
         {user.department_name && <p className="mt-0.5 text-blue-300">{user.department_name}</p>}
       </div>
@@ -91,15 +92,16 @@ export default function Shell({ user, children }: { user: SessionUser; children:
           const active = isActive(href);
           return (
             <Link key={href} href={href}
-              className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${active ? "bg-white/10 text-white" : "hover:bg-white/5 hover:text-white"}`}>
-              <Icon className={`h-[18px] w-[18px] ${active ? "text-blue-300" : "text-slate-400 group-hover:text-slate-200"}`} />
+              className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${active ? "bg-white/10 text-white" : "hover:bg-surface/5 hover:text-white"}`}>
+              <Icon className={`h-[18px] w-[18px] ${active ? "text-blue-300" : "text-white/55 group-hover:text-white/85"}`} />
               <span className="flex-1">{label}</span>
               {href === "/notifications" && unread > 0 && <span className="rounded-full bg-royal px-1.5 text-[11px] font-bold text-white">{unread}</span>}
             </Link>
           );
         })}
       </nav>
-      <button onClick={logout} className="m-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-white">
+      <div className="mx-4 mb-1 sm:hidden"><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-white/55">Appearance</p><ThemeToggle /></div>
+      <button onClick={logout} className="m-3 flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/55 hover:bg-surface/5 hover:text-white">
         <LogOut className="h-[18px] w-[18px]" /> Sign out
       </button>
     </aside>
@@ -115,20 +117,21 @@ export default function Shell({ user, children }: { user: SessionUser; children:
         </div>
       )}
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-slate-200/80 bg-white/80 px-4 backdrop-blur sm:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-surface/80 px-4 backdrop-blur sm:px-6">
           <button className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="Open menu">
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm text-slate-500">Welcome back, <span className="font-semibold text-slate-900">{user.name.split(" ")[0]}</span></p>
           </div>
+          <div className="hidden sm:block"><ThemeToggle compact /></div>
           <div className="relative" ref={bellRef}>
             <button onClick={() => setBellOpen((o) => !o)} className="relative rounded-xl p-2.5 text-slate-600 hover:bg-slate-100" aria-label="Notifications">
               <Bell className="h-5 w-5" />
-              {unread > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">{unread}</span>}
+              {unread > 0 && <span className="absolute right-1.5 top-1.5 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white ring-2 ring-surface">{unread}</span>}
             </button>
             {bellOpen && (
-              <div className="card animate-fade-up absolute right-0 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden">
+              <div className="card animate-pop absolute right-0 mt-2 w-[min(22rem,calc(100vw-2rem))] overflow-hidden">
                 <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
                   <p className="text-sm font-semibold">Notifications</p>
                   {unread > 0 && <button onClick={markAll} className="flex items-center gap-1 text-xs font-medium text-royal hover:underline"><CheckCheck className="h-3.5 w-3.5" /> Mark all read</button>}

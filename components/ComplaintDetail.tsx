@@ -102,7 +102,7 @@ export default function ComplaintDetail({ user, id }: { user: SessionUser; id: s
           <ol className="relative mt-4 space-y-5 border-l-2 border-slate-100 pl-5">
             {history.map((h) => (
               <li key={h.id} className="relative">
-                <span className={`absolute -left-[27px] top-0.5 grid h-4 w-4 place-items-center rounded-full ring-4 ring-white ${dotColor(h)}`} />
+                <span className={`absolute -left-[27px] top-0.5 grid h-4 w-4 place-items-center rounded-full ring-4 ring-surface ${dotColor(h)}`} />
                 <p className="text-sm font-semibold text-slate-900">
                   {h.action === "Status Changed" ? <>Status → {h.to_status}</> : h.action}
                 </p>
@@ -271,7 +271,7 @@ function Rating({ c, onDone }: { c: Complaint; onDone: () => void }) {
     } catch (e) { toast("error", (e as Error).message); } finally { setBusy(false); }
   }
   return (
-    <div className="card border-amber-100 bg-gradient-to-br from-amber-50/50 to-white p-5 sm:p-6">
+    <div className="card border-amber-100 bg-gradient-to-br from-amber-50/50 to-surface p-5 sm:p-6">
       <p className="text-sm font-semibold text-slate-900">How satisfied are you with the resolution?</p>
       <div className="mt-3 flex gap-1" onMouseLeave={() => setHover(0)}>
         {[1, 2, 3, 4, 5].map((n) => (

@@ -45,7 +45,7 @@ export default function Insights({ role }: { role: string }) {
         ) : (
           <div className="grid gap-4 p-5 md:grid-cols-2">
             {clusters.map((cl, i) => (
-              <div key={i} className="rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50/60 to-white p-4">
+              <div key={i} className="rounded-xl border border-violet-100 bg-gradient-to-br from-violet-50/60 to-surface p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-violet-700">{cl.category_name}</p>
@@ -54,12 +54,12 @@ export default function Insights({ role }: { role: string }) {
                   <span className="rounded-full bg-violet-600 px-2.5 py-1 text-xs font-bold text-white">{cl.count} similar · {cl.open} open</span>
                 </div>
                 {cl.keywords.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-1.5">{cl.keywords.map((k) => <span key={k} className="rounded-md bg-white px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-slate-200">#{k}</span>)}</div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">{cl.keywords.map((k) => <span key={k} className="rounded-md bg-surface px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-slate-200">#{k}</span>)}</div>
                 )}
                 <ul className="mt-3 space-y-1.5">
                   {cl.complaints.map((c) => (
                     <li key={c.id}>
-                      <Link href={`/complaints/${c.id}`} className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-white">
+                      <Link href={`/complaints/${c.id}`} className="flex items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-sm hover:bg-surface">
                         <span className="min-w-0 line-clamp-2"><span className="font-mono text-xs text-royal">{c.code}</span> {c.title}</span>
                         <StatusBadge status={c.status} />
                       </Link>
